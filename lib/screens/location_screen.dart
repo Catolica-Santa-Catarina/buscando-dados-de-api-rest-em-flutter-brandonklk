@@ -1,14 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:tempo_template/entity/coordinates_entity.dart';
+import 'package:tempo_template/services/location.dart';
+import 'package:tempo_template/services/weather.dart';
 import 'package:tempo_template/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
-  const LocationScreen({Key? key}) : super(key: key);
+  final CoordinatesEntity locationWeather;
+
+  const LocationScreen({required this.locationWeather, Key? key}) : super(key: key);
 
   @override
   State<LocationScreen> createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  late CoordinatesEntity coordinatesEntity;
+  WeatherModel weather = WeatherModel();
+  Location location = Location();
+
+  void updateUI(CoordinatesEntity weatherData) {
+    setState(() {
+      coordinatesEntity = weatherData;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    updateUI(widget.locationWeather);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +52,9 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      getLocationWeather();
+                    },
                     child: const Icon(
                       Icons.near_me,
                       size: 50.0,
@@ -49,22 +72,25 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0),
                 child: Row(
-                  children: const [
+                  children: [
                     Text(
-                      '32°',
+                      weather.getTemp(coordinatesEntity.getMain()
+                          .getTemp().toInt()),
                       style: kTempTextStyle,
                     ),
                     Text(
-                      '☀️',
+                      weather.getWeatherIcon(coordinatesEntity
+                          .getWeather()[0].getId()),
                       style: kConditionTextStyle,
                     )
                   ],
                 ),
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  'É tempo de 🍦 em Joinville!',
+                  weather.getMessage(coordinatesEntity.getMain()
+                      .getTemp().toInt()),
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
@@ -75,4 +101,11 @@ class _LocationScreenState extends State<LocationScreen> {
       ),
     );
   }
+
+  Future<void> getLocationWeather() async {
+    await location.getCoordinates();
+
+    updateUI(location.getCoordinatesEntity());
+  }
+
 }

@@ -30,4 +30,8 @@ class WeatherModel {
       return 'Leve um 🧥';
     }
   }
+
+  String getTemp(int temp) {
+    return '$temp°';
+  }
 }
