@@ -1,3 +1,5 @@
+import 'package:tempo_template/entity/coordinates_entity.dart';
+
 class WeatherModel {
   String getWeatherIcon(int condition) {
     if (condition < 300) {
@@ -31,7 +33,18 @@ class WeatherModel {
     }
   }
 
-  String getTemp(int temp) {
-    return '$temp°';
+  String getTemp(int? temp) {
+    String tempCity = '-°';
+
+    if (temp != null) {
+      tempCity = '$temp°';
+    }
+
+    return tempCity;
+  }
+
+  String getCity(CoordinatesEntity coordinatesEntity) {
+    return coordinatesEntity.getName().isNotEmpty ?
+      'em ${coordinatesEntity.getName()}' : '';
   }
 }

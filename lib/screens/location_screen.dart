@@ -87,13 +87,21 @@ class _LocationScreenState extends State<LocationScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: 15.0),
-                child: Text(
-                  weather.getMessage(coordinatesEntity.getMain()
-                      .getTemp().toInt()),
-                  textAlign: TextAlign.right,
-                  style: kMessageTextStyle,
-                ),
+                padding: const EdgeInsets.only(right: 15.0),
+                child: Row(
+                  children: [
+                    Text(
+                      weather.getMessage(coordinatesEntity.getMain()
+                        .getTemp().toInt()),
+                      textAlign: TextAlign.right,
+                      style: kMessageTextStyle,
+                    ),
+                    Text(
+                      weather.getCity(coordinatesEntity),
+                      style: kMessageTextStyle,
+                    )
+                  ],
+                )
               )
             ],
           ),
